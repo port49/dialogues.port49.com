@@ -1,6 +1,7 @@
-.rake_tasks
+.DS_Store
+**~
 config/database.yml
 config/deploy.rb
 log
 tmp
-themes/*
+
