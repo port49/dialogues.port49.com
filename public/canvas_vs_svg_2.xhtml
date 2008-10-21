@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Canvas vs SVG: Canvas Example</title>
+  </head>
+  <body>
+
+    <canvas id="w_chart"></canvas>
+    <p style="margin-top:38px">Distribution of Nation's Wealth by Percentile in 2004 According to <a href="http://www.federalreserve.gov/pubs/oss/oss2/scfindex.html">The Federal Reserve Board</a></p>
+
+    <span style="position:absolute;top:250px;left:8px;font-size:9px">0</span>
+    <span style="position:absolute;top:250px;left:218px;font-size:9px">50</span>
+    <span style="position:absolute;top:250px;left:428px;font-size:9px">100</span>
+   
+    <span style="position:absolute;top:8px;left:430px;font-size:9px">50</span>
+    <span style="position:absolute;top:56px;left:430px;font-size:9px">40</span>
+    <span style="position:absolute;top:104px;left:430px;font-size:9px">30</span>
+    <span style="position:absolute;top:152px;left:430px;font-size:9px">20</span>
+    <span style="position:absolute;top:200px;left:430px;font-size:9px">10</span>
+    
+    <span style="position:absolute;top:262px;left:170px;font-size:10px;font-weight:bold">population percentile</span>
+
+    <span style="position:absolute;top:128px;left:440px;font-size:10px;font-weight:bold">nation's wealth</span>
+
+    <script id="source" language="javascript" type="text/javascript">
+    <![CDATA[
+
+      // Create bars
+      var wealth = [
+        [ 0, 50, 2.5 ],
+        [ 50, 90, 27.9 ],
+        [ 90, 95, 12.0 ],
+        [ 95, 99, 24.1 ],
+        [ 99, 100, 33.4 ]
+      ]
+
+    ///// Wealth Chart
+      var canvas = document.getElementById( 'w_chart' );
+
+      var bars = [];
+      var width = 420;
+      var height = 240;
+      canvas.setAttribute( 'width', width );
+      canvas.setAttribute( 'height', height );
+
+      // Get context
+      var chart = canvas.getContext( '2d' );
+ 
+      // Create the frame
+      chart.fillStyle = "white";
+      chart.fillRect( 0, 0, width, height );
+      chart.strokeStyle = "2px";
+      chart.strokeRect( 1, 1, ( width - 2 ), ( height - 2 ) );
+      
+      var adjusted_width = ( width - 4 );
+      var adjusted_height = ( height - 2 );
+
+      // Create each bar
+      for( var i = 0; i < wealth.length; i++ ) {
+        var x = 2 + ( wealth[i][0] * adjusted_width / 100 ); 
+        var area_width = ( ( wealth[i][1] - wealth[i][0] )  * adjusted_width / 100 ); 
+        var y = adjusted_height - ( ( wealth[i][2] / ( wealth[i][1] - wealth[i][0] ) / 100 ) * adjusted_height * 2 ); 
+        var area_height = adjusted_height - y; 
+        chart.fillStyle = "#85c385";
+        chart.fillRect( x, y, area_width, area_height );
+      }
+    ]]>
+    </script>
+  </body>
+</html>
+

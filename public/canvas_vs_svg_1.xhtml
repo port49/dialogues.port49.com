@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg">
+  <head>
+    <title>Canvas vs SVG: SVG Enhanced Example</title>
+    <style type="text/css">
+      text {
+        fill: black;
+        font-size: 10px;
+      }
+      rect.bar {
+        fill: #85c385;
+        stroke: #000000;
+        stroke-width: 1px;
+      }
+      rect.hover {
+        fill: #ffcc00;
+        stroke: #ff6600;
+        stroke-width: 3px;
+      }
+      rect.frame {
+        fill: transparent;
+        stroke: black;
+        stroke-width: 2px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <svg:svg id="m_chart"></svg:svg>
+    <p>McCain's <a href="http://www.opensecrets.org/pres08/contrib.php">Top Contributors</a> as reported on 10/20/08</p>
+
+    <script id="source" language="javascript" type="text/javascript">
+    <![CDATA[
+
+      // Data
+      var mccain = [
+        [ "Merrill Lynch", 349170 ],
+        [ "Citigroup Inc", 287801 ],
+        [ "Morgan Stanley", 249377 ],
+        [ "Goldman Sachs", 220045 ],
+        [ "JPMorgan Chase & Co", 206392 ],
+        [ "AT&T Inc", 183663 ],
+        [ "Credit Suisse Group", 175503 ],
+        [ "PricewaterhouseCoopers", 163670 ],
+        [ "Blank Rome LLP", 153426 ],
+        [ "US Government", 152118 ],
+        [ "US Army", 150470 ],
+        [ "Wachovia Corp", 147456 ],
+        [ "Greenberg Traurig LLP", 145737 ],
+        [ "UBS AG", 141365 ],
+        [ "Bank of America", 133975 ],
+        [ "FedEx Corp", 121904 ],
+        [ "Gibson, Dunn & Crutcher", 120246 ],
+        [ "US Dept of Defense", 118125 ],
+        [ "Lehman Brothers", 115707 ],
+        [ "Bear Stearns", 108000 ]
+      ].reverse();
+
+
+    ///// McCain Chart
+      var bars = [];
+      var width = 492;
+      var height = 340;
+
+      var chart = document.getElementById( 'm_chart' );
+      var svgNS = 'http://www.w3.org/2000/svg';
+
+      chart.setAttributeNS( null, 'width', width );
+      chart.setAttributeNS( null, 'height', height );
+      
+      width = width - 72;
+      height = height - 100;
+
+      // Create the outer frame
+      frame = document.createElementNS( svgNS, 'rect' );
+      frame.setAttributeNS( null, 'x', 1 );
+      frame.setAttributeNS( null, 'y', 1 );
+      frame.setAttributeNS( null, 'width', width );
+      frame.setAttributeNS( null, 'height', height );
+      frame.setAttributeNS( null, 'class', "frame" );
+      chart.appendChild( frame );
+
+      // Create the y-axis labels
+      labels = [ [ "$1,000,000", 100 ], [ "$750,000", 75 ], [ "$500,000", 50 ], [ "$250,000", 25 ] ];
+      for( var i = 0; i < labels.length; i++ ) {
+        var label = document.createElementNS( svgNS, 'text' );
+        label.setAttributeNS( null, 'x', 3 + width );
+        label.setAttributeNS( null, 'y', 9 + ( 100 - labels[i][1] ) * height / 100 );
+        label.textContent = labels[i][0];
+        chart.appendChild( label );
+      }
+
+      // Create each bar
+      for( var i = 0; i < mccain.length; i++ ) {
+        bar_width = width / mccain.length;
+        bar_height = mccain[i][1] / 1000000 * height;
+        bar = document.createElementNS( svgNS, 'rect' );
+        bar.setAttributeNS( null, 'id', "bar_" + i );
+        bar.setAttributeNS( null, 'width', bar_width );
+        bar.setAttributeNS( null, 'height', bar_height );
+        bar.setAttributeNS( null, 'x', ( bar_width * i ) + 1 );
+        bar.setAttributeNS( null, 'y', ( height - bar_height ) + 1 );
+        bar.setAttributeNS( null, 'class', "bar" );
+        if( i == 1 ) {
+          bar.setAttributeNS( null, 'onclick', "this.setAttributeNS(null,'width','0')" );
+        }
+        chart.appendChild( bar );
+
+        // Create the text under each bar
+        text = document.createElementNS( svgNS, 'text' );
+        text.setAttributeNS( null, 'x', ( ( bar_width * i )+ 7 ) );
+        text.setAttributeNS( null, 'y', ( height + 8 ) );
+        text.setAttributeNS( null, 'transform', "rotate(45," + ( ( bar_width * i ) + 7 ) + "," + ( height + 8 ) + ")" );
+        text.textContent = mccain[i][0];
+
+        chart.appendChild( text );
+      }
+
+      // Add DOM effects
+      var goners = [];
+      goners[0] = document.getElementById( 'bar_0' );
+      goners[1] = document.getElementById( 'bar_1' );
+      goners[2] = document.getElementById( 'bar_8' );
+      goners[3] = document.getElementById( 'bar_19' );
+      for( var i = 0; i < goners.length; i++ ) {
+        goners[i].setAttributeNS( null, 'onclick', "this.setAttributeNS( null, 'width', '0' )" );
+      }
+
+      var hover = document.getElementById( 'bar_16' );
+      hover.setAttributeNS( null, 'onmouseover', "this.setAttributeNS( null, 'class', 'hover' )" );
+      hover.setAttributeNS( null, 'onmouseout', "this.setAttributeNS( null, 'class', 'bar' )" );
+
+      // Some dnd helper functions
+      var start_x = 0;
+      var start_y = 0;
+      var drag_object = undefined;
+      function mouseCoords( event ) { 
+        return { x: parseInt( event.pageX ), y: parseInt( event.pageY ) }; 
+      } 
+      function startMovingBar( event ) {
+        drag_object = event.target;
+        start_x = mouseCoords( event ).x;
+        start_y = mouseCoords( event ).y;
+        document.onmousemove = moveBar;
+      }
+      function moveBar( event ) {
+        var end_x = mouseCoords( event ).x;
+        var end_y = mouseCoords( event ).y;
+        drag_object.setAttribute( 'transform', 'translate(' + ( end_x - start_x ) + ',' + ( end_y - start_y ) + ')');
+      }
+      function stopMovingBar( event ) {
+        document.onmousemove = undefined;
+        drag_object = undefined;
+      }
+      // Add dnd
+      var moving = document.getElementById( 'bar_18' );
+      moving.onmousedown = startMovingBar;
+      moving.onmouseup = stopMovingBar;
+    ]]>
+    </script>
+  </body>
+</html>
+
