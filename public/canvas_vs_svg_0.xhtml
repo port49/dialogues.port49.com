@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+    <script language="javascript" type="text/javascript" src="/javascripts/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="/javascripts/jquery.flot.pack.js"></script>
+  </head>
+  <body>
+
+    <svg id="o_chart" style="text-anchor:middle;" xmlns="http://www.w3.org/2000/svg">
+    </svg>
+
+    <p>Obama.</p>
+
+    <script id="source" language="javascript" type="text/javascript">
+    <![CDATA[
+
+      // Create bars
+      var obama = [
+        [ "Goldman Sachs", 739521 ],
+        [ "University of California", 697506 ],
+        [ "Harvard University", 501489 ],
+        [ "Citigroup Inc", 492548 ],
+        [ "Google Inc", 487355 ],
+        [ "JPMorgan Chase & Co", 475112 ],
+        [ "National Amusements Inc", 432169 ],
+        [ "Microsoft Corp", 429656 ],
+        [ "UBS AG", 419550 ],
+        [ "Lehman Brothers", 391774 ],
+        [ "Wilmerhale Llp", 383024 ],
+        [ "Time Warner", 375063 ],
+        [ "Sidley Austin LLP", 370916 ],
+        [ "Skadden, Arps et al", 360409 ],
+        [ "Stanford University", 341399 ],
+        [ "Morgan Stanley", 341380 ],
+        [ "Latham & Watkins", 328879 ],
+        [ "Jones Day", 309960 ],
+        [ "University of Chicago", 294237 ],
+        [ "General Electric", 290584 ]
+      ].reverse();
+
+    ///// Obama Chart
+      var bars = [];
+      var width = 420;
+      var height = 340;
+
+      var chart = document.getElementById( 'o_chart' );
+      var svgNS = 'http://www.w3.org/2000/svg';
+
+      chart.setAttributeNS( null, 'width', width );
+      chart.setAttributeNS( null, 'height', height );
+      
+      width = width - 100;
+      height = height - 100;
+
+      frame = document.createElementNS( svgNS, 'rect' );
+      frame.setAttributeNS( null, 'width', width );
+      frame.setAttributeNS( null, 'height', height );
+      frame.setAttributeNS( null, 'fill', "white" );
+      frame.setAttributeNS( null, 'stroke', "black" );
+      frame.setAttributeNS( null, 'stroke-width', '3px' );
+      chart.appendChild( frame );
+
+      for( var i = 0; i < obama.length; i++ ) {
+        bar_width = width / obama.length;
+        bar_height = obama[i][1] / 1000000 * height;
+        bar = document.createElementNS( svgNS, 'rect' );
+        bar.setAttributeNS( null, 'width', bar_width );
+        bar.setAttributeNS( null, 'height', bar_height );
+        bar.setAttributeNS( null, 'x', "" + ( bar_width * i ) );
+        bar.setAttributeNS( null, 'y', "" + ( height - bar_height ) );
+        bar.setAttributeNS( null, 'fill', "#85c385" );
+        bar.setAttributeNS( null, 'stroke', "#000000" );
+        bar.setAttributeNS( null, 'stroke-width', "1px" );
+        if( i == 1 ) {
+          bar.setAttributeNS( null, 'onclick', "this.setAttributeNS(null,'width','0')" );
+        }
+        chart.appendChild( bar );
+
+        text = document.createElementNS( svgNS, 'text' );
+        text.setAttributeNS( null, 'x', "" + ( ( bar_width * i ) + 46 ) );
+        text.setAttributeNS( null, 'y', "" + ( height + 50 ) );
+        text.setAttributeNS( null, 'fill', "#000000" );
+        text.setAttributeNS( null, 'font-size', "10" );
+        text.setAttributeNS( null, 'transform', "rotate(45," + ( ( bar_width * i ) + 46 ) + "," + ( height + 50 ) + ")" );
+        text.textContent = obama[i][0];
+
+        chart.appendChild( text );
+      }
+    ]]>
+    </script>
+  </body>
+
+</html>
+
+
